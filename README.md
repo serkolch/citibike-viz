@@ -10,3 +10,9 @@ A user can view the saturation of bikes at stations every half-hour and make fut
 MEAN Stack - MongoDB, Express.js, Angular.js, Node.js
 Citibike Data - https://www.citibikenyc.com/stations/json, a second app I will write to make API calls every 30 minutes and save the data
 Google APIs Javascript Map
+
+####Wireframe
+![Wireframe](http://i.imgur.com/spUhNY4.jpg "Single Page Citibike App")
+
+####ERD
+![ERD](http://i.imgur.com/TUqwFJy.jpg "ERD")
