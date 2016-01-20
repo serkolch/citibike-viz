@@ -1,0 +1,27 @@
+{
+  "name": "citibike_data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serkolch/citibike-viz-data.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serkolch/citibike-viz-data/issues"
+  },
+  "homepage": "https://github.com/serkolch/citibike-viz-data#readme",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "fs": "0.0.2",
+    "glob": "^6.0.4",
+    "mongodb": "^2.1.4",
+    "request": "^2.67.0"
+  }
+}
