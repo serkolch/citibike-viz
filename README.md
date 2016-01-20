@@ -1,2 +1,12 @@
-# citibike-viz
-A citibike map that doubles as a current status of the citibike stations around manhattan and as a visualization of the hourly trends
+# Citibike Trip Planner & Time-Map
+
+####Trip Planner
+A user can click on a station on the map to bring up the station's status - number of bikes available, number of docks available. They can set it to the beginning dock and choose another dock as the end dock. The system will predict how feasible it will be to both get a bike and dock that bike within the next hour at the selected stations.
+
+####Time-Map
+A user can view the saturation of bikes at stations every half-hour and make future plans based on the bikes.
+
+####Technologies
+MEAN Stack - MongoDB, Express.js, Angular.js, Node.js
+Citibike Data - https://www.citibikenyc.com/stations/json, a second app I will write to make API calls every 30 minutes and save the data
+Google APIs Javascript Map
