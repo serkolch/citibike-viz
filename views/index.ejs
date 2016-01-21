@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app="BikeApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Citibike Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/jquery/dist/jquery.js"></script>  
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
+  <script src="/dist/semantic.min.js"></script>
+  <script src="/js/main.js"></script>
+</head>
+<body>
+
+  <!-- Nav Bar -->
+  <div class="ui secondary pointing menu">
+    <h2 class="active item">
+      Cycle Planner
+    </h2>
+    <div class="right menu">
+      <a class="ui item">
+        Help
+      </a>
+    </div>
+  </div>
+
+  <div class="ui grid page-length">
+    <!-- Side Bar -->
+    <div class="two wide column">
+      <div class="ui vertical fluid tabular menu">
+        <a class="item">
+          Bio
+        </a>
+        <button class="ui labeled icon button">
+          <i class="pointing down icon"></i>
+          Right Now
+        </button>        
+        <button class="ui labeled icon button">
+          <i class="play icon"></i>
+          Play
+        </button>
+        <button class="ui labeled icon button">
+          <i class="pause icon"></i>
+          Pause
+        </button>
+      </div>
+    </div>
+    <!-- Map -->
+    <div class="fourteen wide stretched column">
+      <div id="map"></div>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkDaMh2gs6xg2xkEFBSNPzixQMoGfL0WE&callback=initMap"
+        async defer></script>
+    </div>
+  </div>
+
+</body>
+</html>
