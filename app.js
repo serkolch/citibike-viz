@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var request = require('request')
 
 // Configuration
 app.use(bodyParser.json());
@@ -23,7 +24,17 @@ MongoClient.connect(mongoUrl, function(err, database) {
 
 // Routes
 app.get('/', function(req, res){
-  res.render('index');
+  res.render('index',{key: process.env.GOOGLE_KEY});
+})
+
+app.get('/current', function(req,res){
+  request('http://www.citibikenyc.com/stations/json',function(error,response,body){
+    var parsedData = JSON.parse(body)
+    var stations = parsedData.stationBeanList.map(function(station){
+      return {stationId: station.id, lat: station.latitude, lng: station.longitude, bikes: station.availableBikes, capacity: station.totalDockqs}
+    })
+    res.json(stations)
+  })
 })
 
 app.get('/data',function(req,res){
