@@ -28,14 +28,20 @@
     <!-- Side Bar -->
     <div class="two wide column">
       <div class="ui vertical fluid tabular menu">
-        <a class="item">
-          Bio
-        </a>
+        <select id="time-dropdown" class="ui dropdown">
+          <option value="current">Current</option>
+          <option value="08-00AM">8:00AM</option>          
+          <option value="10-00AM">10:00AM</option>
+          <option value="12-00PM">12:00PM</option>
+          <option value="02-15PM">2:15PM</option>
+          <option value="04-30PM">4:30PM</option>
+          <option value="07-45PM">7:45PM</option>
+        </select>
         <button class="ui labeled icon button">
           <i class="pointing down icon"></i>
           Right Now
         </button>        
-        <button class="ui labeled icon button">
+        <button id= "play-button" class="ui labeled icon button">
           <i class="play icon"></i>
           Play
         </button>

@@ -27,18 +27,21 @@ app.get('/', function(req, res){
   res.render('index',{key: process.env.GOOGLE_KEY});
 })
 
-app.get('/current', function(req,res){
+app.get('/current-data', function(req,res){
   request('http://www.citibikenyc.com/stations/json',function(error,response,body){
     var parsedData = JSON.parse(body)
-    var stations = parsedData.stationBeanList.map(function(station){
-      return {stationId: station.id, lat: station.latitude, lng: station.longitude, bikes: station.availableBikes, capacity: station.totalDockqs}
+    var stations = {}
+    parsedData.stationBeanList.forEach(function(station){
+      stations[station.id]={lat: station.latitude, lng: station.longitude, bikes: station.availableBikes, capacity: station.totalDocks}
     })
     res.json(stations)
   })
 })
 
-app.get('/data',function(req,res){
-  //send mongo data to front end
+app.get('/data-averages',function(req,res){
+  db.collection('bikes').find().toArray(function(err,results){
+    res.json(results)
+  })
 })
 
 app.listen(process.env.PORT || 3000);
