@@ -53,16 +53,37 @@ var toggleInfo = function(event){
 
 $(document).ready(function(){
   var $timeDropdown = $('#time-dropdown')
-  var loadNewOpacity = function(){
-    var time = $(this).val()
+  
+  var setMarkerOpacity = function(time){
     var changeBaseData = (time==="current") ? currentData : bikeData;
     markers.forEach(function(marker){
       var station = changeBaseData[marker.stationId]
       if (station){
         var bikes = (time==="current") ? station.bikes : station.averageBikes[time]
-        marker.setOpacity(calculateOpacity(bikes,station.capacity))        
+        marker.setOpacity(calculateOpacity(bikes,station.capacity))     
       }
-    })      
+    })  
   }
+
+  var loadNewOpacity = function(){
+    var time = $(this).val()
+    setMarkerOpacity(time);     
+  }
+
   $timeDropdown.on('change', loadNewOpacity)
+
+  var $playButton = $('#play-button');
+  var loopTimes = function(){
+    // console.log('click')
+    // $('#time-dropdown option:selected').removeAttr('option','selected').next().attr('option','selected');
+    // console.log($('#time-dropdown option:selected'))
+    $options = $('option')
+    console.log($options)
+      for (i=0;i<$options.length;i++){
+        // var time = $options[i]
+        console.log($options[i])
+        // loadNewOpacity(time)        
+      }
+  }
+  $playButton.on('click',loopTimes)
 })
