@@ -2,9 +2,10 @@ var map;
 var markers = [];
 var bikeData
 var currentData
+var bike = 'images/bike.png';
 
 var calculateOpacity = function(num1,num2){
-  return 0.5+0.9*(num1/num2)
+  return 0.02+0.98*(num1/num2)
 }
 
 $.ajax({
@@ -31,6 +32,7 @@ var addMarkers = function(){
         position: {lat: station.lat, lng: station.lng},
         map: map,
         stationId: key,
+        icon: bike,
         opacity: calculateOpacity(stationBikes,stationTotal)
       });
       marker.addListener('click',toggleInfo)
@@ -73,17 +75,43 @@ $(document).ready(function(){
   $timeDropdown.on('change', loadNewOpacity)
 
   var $playButton = $('#play-button');
+  var $pauseButton = $('#pause-button');
   var loopTimes = function(){
-    // console.log('click')
-    // $('#time-dropdown option:selected').removeAttr('option','selected').next().attr('option','selected');
-    // console.log($('#time-dropdown option:selected'))
-    $options = $('option')
-    console.log($options)
-      for (i=0;i<$options.length;i++){
-        // var time = $options[i]
-        console.log($options[i])
-        // loadNewOpacity(time)        
+
+    var $options = $('option').slice(1,$('option').length)
+    // console.log($('#time-dropdown option:selected')[0])
+
+    var currentIndex
+    $.each($options, function(index,option){
+      if (option===$('#time-dropdown option:selected')[0]){
+        currentIndex = index
       }
+    })
+
+    var loopInterval = window.setInterval(function(){
+      if (currentIndex === undefined || currentIndex ===$options.length-1){
+        currentIndex = -1;
+      }
+      currentIndex++;
+      $timeDropdown.selected = false;
+      $options[currentIndex].selected = true;
+      setMarkerOpacity($timeDropdown.val())
+    },1000)
+
+    $playButton.addClass('disabled')
+    $pauseButton.removeClass('disabled');
+    $pauseButton.on('click', function(){
+      clearInterval(loopInterval)
+      $pauseButton.off()
+      $pauseButton.addClass('disabled')
+      $playButton.removeClass('disabled')
+    })
+
   }
   $playButton.on('click',loopTimes)
+
+  $('#help').on('click',function(){
+    $('.ui.modal').modal('show');
+  })
+
 })

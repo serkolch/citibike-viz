@@ -5,8 +5,8 @@
   <title>Citibike Planner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="/jquery/dist/jquery.js"></script>  
-  <link rel="stylesheet" type="text/css" href="css/styles.css">
   <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
   <script src="/dist/semantic.min.js"></script>
   <script src="/js/main.js"></script>
 </head>
@@ -18,44 +18,102 @@
       Cycle Planner
     </h2>
     <div class="right menu">
-      <a class="ui item">
-        Help
-      </a>
+      <div class="item">
+        <button id="help" class="middle aligned content ui item inverted blue button">
+          Help
+        </button>
+      </div>
     </div>
   </div>
 
   <div class="ui grid page-length">
     <!-- Side Bar -->
-    <div class="two wide column">
-      <div class="ui vertical fluid tabular menu">
-        <select id="time-dropdown" class="ui dropdown">
-          <option value="current">Current</option>
-          <option value="08-00AM">8:00AM</option>          
-          <option value="10-00AM">10:00AM</option>
-          <option value="12-00PM">12:00PM</option>
-          <option value="02-15PM">2:15PM</option>
-          <option value="04-30PM">4:30PM</option>
-          <option value="07-45PM">7:45PM</option>
-        </select>
-        <button class="ui labeled icon button">
-          <i class="pointing down icon"></i>
-          Right Now
-        </button>        
-        <button id="play-button" class="ui labeled icon button">
-          <i class="play icon"></i>
-          Play
-        </button>
-        <button class="ui labeled icon button">
-          <i class="pause icon"></i>
-          Pause
-        </button>
-      </div>
+    <div class="two wide column ui secondary vertical menu">
+      <select id="time-dropdown" class="fluid ui dropdown">
+        <option value="current">Current</option>
+        <option value="04-00PM">4:00AM</option>
+        <option value="08-00AM">8:00AM</option>
+        <option value="09-00AM">9:00AM</option>
+        <option value="10-00AM">10:00AM</option>
+        <option value="11-00AM">11:00AM</option>
+        <option value="12-00PM">12:00PM</option>
+        <option value="01-00PM">1:00PM</option>
+        <option value="02-15PM">2:15PM</option>
+        <option value="03-15PM">3:15PM</option>
+        <option value="04-30PM">4:30PM</option>
+        <option value="07-45PM">7:45PM</option>
+        <option value="09-00PM">9:00PM</option>
+        <option value="10-00PM">10:00PM</option>
+        <option value="11-00PM">11:00PM</option>
+        <option value="12-00AM">12:00AM</option>
+      </select>
+      <button id="right-now" class="fluid ui labeled icon button blue">
+        <i class="pointing down icon"></i>
+        Right Now
+      </button>        
+      <button id="play-button" class="fluid ui labeled icon button blue">
+        <i class="play icon"></i>
+        Play
+      </button>
+      <button id="pause-button" class="fluid ui labeled icon button disabled blue">
+        <i class="pause icon"></i>
+        Pause
+      </button>
+      <table class="fluid ui blue table menu-center">
+        <thead>
+          <tr>
+            <th>Starting Station</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No Station Selected</td>
+          </tr>
+          <tr>
+            <td>Bikes Available: </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="fluid ui blue table menu-center">
+        <thead>
+          <tr>
+            <th>Destination</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No Station Selected</td>
+          </tr>
+          <tr>
+            <td>Docks Available: </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <!-- Map -->
     <div class="fourteen wide stretched column">
       <div id="map"></div>
       <script src="https://maps.googleapis.com/maps/api/js?key=<%=key%>&callback=initMap"
         async defer></script>
+    </div>
+  </div>
+
+  <div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+      Cycle Planner Instructions
+    </div>
+    <div class="description">
+      <p>The markers on the map denote Citibike Stations. Their opacity represents the number of bikes currently available at the stations - the more opaque the marker, the more bikes are currently docked there.</p> 
+      <div class="ui header">Trip Planner</div>
+      <p>Click on a marker to bring up info on a station - this info is shown on the sidebar. This is your starting dock.</p>
+      <p>Click on a second marker to bring up info on a second station, shown below the first station's info. This is the destination dock.</p>
+      <p>Based on historical data, the planner will give you a prediction on how likely you will be able to get a bike at the starting station and to dock at the destination station within the hour.</p>
+      <div class="ui header">Time-Lapse</div>
+      <p>Use the dropdown menu on the side-bar to view historical data from a specified time</p>
+      <p>The play button will continuously loop through all historical data</p>
+      <p>The pause button will stop the loop so that you may get a closer look at historical data</p>
+      <div class="ui header">Enjoy! - Sergey Kolchinskiy</div>
     </div>
   </div>
 

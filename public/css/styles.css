@@ -1,3 +1,28 @@
 .page-length {
   height: 90vh;
 }
+
+.description {
+  padding: 1.6em;
+}
+
+#help, #play-button {
+  transition: 0.5s all;
+}
+
+#time-dropdown {
+  margin: 0 12px 12px 12px;
+}
+
+#play-button, #pause-button, #right-now , .menu-center{
+  margin: 12px;
+}
+
+.ui.secondary.vertical.menu {
+  /*margin-left: 1rem;*/
+  /*padding-right: 2rem;*/
+}
+
+.fourteen.wide.stretched.column {
+  padding-right: 0;
+}
