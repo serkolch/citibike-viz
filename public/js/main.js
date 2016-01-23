@@ -5,7 +5,7 @@ var currentData
 var bike = 'images/bike.png';
 
 var calculateOpacity = function(num1,num2){
-  return 0.02+0.98*(num1/num2)
+  return 0.1+0.98*(num1/num2)
 }
 
 $.ajax({
@@ -24,10 +24,34 @@ var addMarkers = function(){
   }).then(function(response){
     currentData = response
     var keys = Object.keys(currentData)
+    var infoWindow = new google.maps.InfoWindow({
+      content: '<button class="start-station ui inverted blue button small">Start Dock</button>'+
+        '<button class="end-station ui inverted blue button small">Destination</button>'
+    })
+
+    google.maps.event.addListener(infoWindow,'domready',function(){
+      $('.start-station').off();
+      $('.end-station').off();
+      var time = $('#time-dropdown').val()
+      var baseData = (time==='current') ? currentData : bikeData
+      var stationName = bikeData[infoWindow.stationId].stationName
+      var stationBikes = (time==='current') ? baseData[infoWindow.stationId].bikes : baseData[infoWindow.stationId].averageBikes[time]
+      var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
+      $('.start-station').on('click',function(){
+        $('#start-station-name').text(stationName)
+        $('#start-station-bikes').text('Bikes Available: '+stationBikes)
+      })
+      $('.end-station').on('click',function(){
+        $('#end-station-name').text(stationName)
+        $('#end-station-docks').text('Docks Available: '+stationDocks)
+      })
+    })
+
     keys.forEach(function(key){
       var station = currentData[key]
       var stationBikes = station.bikes
       var stationTotal = station.capacity
+
       var marker = new google.maps.Marker({
         position: {lat: station.lat, lng: station.lng},
         map: map,
@@ -35,7 +59,10 @@ var addMarkers = function(){
         icon: bike,
         opacity: calculateOpacity(stationBikes,stationTotal)
       });
-      marker.addListener('click',toggleInfo)
+      marker.addListener('click',function(){
+        infoWindow.open(map,marker)
+        infoWindow.stationId = marker.stationId
+      })
       markers.push(marker)
     })
   })
@@ -48,10 +75,6 @@ function initMap() {
   });
   addMarkers();
 };
-
-var toggleInfo = function(event){
-  console.log(this)
-}
 
 $(document).ready(function(){
   var $timeDropdown = $('#time-dropdown')
@@ -79,7 +102,6 @@ $(document).ready(function(){
   var loopTimes = function(){
 
     var $options = $('option').slice(1,$('option').length)
-    // console.log($('#time-dropdown option:selected')[0])
 
     var currentIndex
     $.each($options, function(index,option){

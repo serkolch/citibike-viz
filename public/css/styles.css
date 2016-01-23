@@ -6,7 +6,7 @@
   padding: 1.6em;
 }
 
-#help, #play-button {
+#help {
   transition: 0.5s all;
 }
 
@@ -25,4 +25,8 @@
 
 .fourteen.wide.stretched.column {
   padding-right: 0;
+}
+
+.start-station, .end-station {
+  background: none;
 }
