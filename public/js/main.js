@@ -5,18 +5,43 @@ var currentData
 var bike = 'images/bike.png';
 var keys = []
 
+// Calculate marker opacity based on number of bikes in station
 var calculateOpacity = function(num1,num2){
-  return 0.1+0.98*(num1/num2)
+  return 0.08+0.92*(num1/num2)
 }
 
+var calculateDistanceAndDuration = function(){
+  var originStationId = $('#start-station-bikes').attr('station')
+  var originStation = bikeData[originStationId]
+  var origin = new google.maps.LatLng(originStation.latitude,originStation.longitude);
+  var destinationStationId = $('#end-station-docks').attr('station')
+  var destinationStation = bikeData[destinationStationId]
+  var destination = new google.maps.LatLng(destinationStation.latitude,destinationStation.longitude)
+
+  var service = new google.maps.DistanceMatrixService();
+  service.getDistanceMatrix({
+    origins: [origin],
+    destinations: [destination],
+    travelMode: google.maps.TravelMode.BICYCLING
+  }, function(response,status){
+    var distance = response.rows[0].elements[0].distance.text
+    var duration = response.rows[0].elements[0].duration.text
+    $('#trip-distance').text('Distance: '+distance)
+    $('#trip-duration').text('Duration: '+duration)
+  })
+}
+
+// Set base data to either historical bike data or current data based on input time
 var determineBaseData = function(time){
   return (time==='current') ? currentData : bikeData
 }
 
+// Find number of bikes at a station
 var determineStationBikes = function(data,time,id){
   return (time==='current') ? data[id].bikes : data[id].averageBikes[time]
 }
 
+// Load historical data
 $.ajax({
   url: '/data-averages',
   type: 'get',
@@ -25,37 +50,53 @@ $.ajax({
   bikeData = response[0]
 })
 
+// All encompassing markers function
 var addMarkers = function(){
+  // Load current data from Citibike API (routed through server for security reasons)
   $.ajax({
     url: '/current-data',
     type: 'get',
     dataType: 'json'
   }).then(function(response){
     currentData = response
+
+    // Create an info window that loads on each marker with two buttons
     var infoWindow = new google.maps.InfoWindow({
       content: '<button class="start-station ui inverted blue button small">Start Dock</button>'+
         '<button class="end-station ui inverted blue button small">Destination</button>'
     })
 
+    // Add an event listener on the infoWindow when the DOM is loaded
     google.maps.event.addListener(infoWindow,'domready',function(){
+      // Remove existing listeners (prevent duplicate functionality)
       $('.start-station').off();
       $('.end-station').off();
+
       var time = $('#time-dropdown').val()
       var stationName = bikeData[infoWindow.stationId].stationName
       var stationBikes = determineStationBikes(determineBaseData(time),time,infoWindow.stationId)
       var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
+
+      // Populate tables with information about stations, add station attribute to reference later
       $('.start-station').on('click',function(){
         $('#start-station-name').text(stationName)
         $('#start-station-bikes').text('Bikes Available: '+stationBikes)
         $('#start-station-bikes').attr('station',infoWindow.stationId)
+        if ($('#end-station-docks').attr('station')){
+          calculateDistanceAndDuration();
+        }
       })
       $('.end-station').on('click',function(){
         $('#end-station-name').text(stationName)
         $('#end-station-docks').text('Docks Available: '+stationDocks)
         $('#end-station-docks').attr('station',infoWindow.stationId)
+        if ($('#start-station-bikes').attr('station')){
+          calculateDistanceAndDuration();
+        }        
       })
     })
 
+    //Create an array of keys for stations in both current data and bike data
     Object.keys(currentData).forEach(function(key){
       if (Object.keys(bikeData).indexOf(key)>=0){
         keys.push(key)
@@ -67,6 +108,7 @@ var addMarkers = function(){
       var stationBikes = station.bikes
       var stationTotal = station.capacity
 
+      // Create a new marker at the correct position and a calculated opacity for each station
       var marker = new google.maps.Marker({
         position: {lat: station.lat, lng: station.lng},
         map: map,
@@ -74,6 +116,8 @@ var addMarkers = function(){
         icon: bike,
         opacity: calculateOpacity(stationBikes,stationTotal)
       });
+
+      // Pop open the infoWindow on click, and re-assign the infoWindow stationId
       marker.addListener('click',function(){
         infoWindow.open(map,marker)
         infoWindow.stationId = marker.stationId
@@ -97,25 +141,29 @@ $(document).ready(function(){
   var $startStationBikes = $('#start-station-bikes')
   var $endStationDocks = $('#end-station-docks')
 
+  // Set the opacity on the markers
   var setMarkerOpacity = function(time){
     var baseData = determineBaseData(time);
     markers.forEach(function(marker){
       var station = baseData[marker.stationId]
       if (station){
-        var bikes = (time==="current") ? station.bikes : station.averageBikes[time]
+        var bikes = determineStationBikes(baseData,time,marker.stationId)
         marker.setOpacity(calculateOpacity(bikes,station.capacity))     
       }
     })  
   }
 
+  // Change the values of bikes and docks in the table
   var changeBikesAndDocks = function(time){
     var startStationId = $startStationBikes.attr('station')
     var endStationId = $endStationDocks.attr('station')
     var baseData = determineBaseData(time)
+    // Change bikes if startStationId is defined
     if (startStationId){
       var bikes = determineStationBikes(baseData,time,startStationId)
       $startStationBikes.text('Bikes Available: '+bikes)
     }
+    // Change docks if endStationId is defined
     if (endStationId){
       var docks = bikeData[endStationId].capacity - determineStationBikes(baseData,time,endStationId)
       $endStationDocks.text('Docks Available: '+docks)
@@ -127,16 +175,16 @@ $(document).ready(function(){
     setMarkerOpacity(time);
     changeBikesAndDocks(time);
   }
-
   $timeDropdown.on('change', timeChange)
 
   var $playButton = $('#play-button');
   var $pauseButton = $('#pause-button');
+  
   var loopTimes = function(){
-
+    // Elements of defined times, excluding current
     var $options = $('option').slice(1,$('option').length)
-
     var currentIndex
+
     $.each($options, function(index,option){
       if (option===$('#time-dropdown option:selected')[0]){
         currentIndex = index
