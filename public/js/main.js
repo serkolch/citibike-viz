@@ -3,9 +3,18 @@ var markers = [];
 var bikeData
 var currentData
 var bike = 'images/bike.png';
+var keys = []
 
 var calculateOpacity = function(num1,num2){
   return 0.1+0.98*(num1/num2)
+}
+
+var determineBaseData = function(time){
+  return (time==='current') ? currentData : bikeData
+}
+
+var determineStationBikes = function(data,time,id){
+  return (time==='current') ? data[id].bikes : data[id].averageBikes[time]
 }
 
 $.ajax({
@@ -23,7 +32,6 @@ var addMarkers = function(){
     dataType: 'json'
   }).then(function(response){
     currentData = response
-    var keys = Object.keys(currentData)
     var infoWindow = new google.maps.InfoWindow({
       content: '<button class="start-station ui inverted blue button small">Start Dock</button>'+
         '<button class="end-station ui inverted blue button small">Destination</button>'
@@ -33,18 +41,25 @@ var addMarkers = function(){
       $('.start-station').off();
       $('.end-station').off();
       var time = $('#time-dropdown').val()
-      var baseData = (time==='current') ? currentData : bikeData
       var stationName = bikeData[infoWindow.stationId].stationName
-      var stationBikes = (time==='current') ? baseData[infoWindow.stationId].bikes : baseData[infoWindow.stationId].averageBikes[time]
+      var stationBikes = determineStationBikes(determineBaseData(time),time,infoWindow.stationId)
       var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
       $('.start-station').on('click',function(){
         $('#start-station-name').text(stationName)
         $('#start-station-bikes').text('Bikes Available: '+stationBikes)
+        $('#start-station-bikes').attr('station',infoWindow.stationId)
       })
       $('.end-station').on('click',function(){
         $('#end-station-name').text(stationName)
         $('#end-station-docks').text('Docks Available: '+stationDocks)
+        $('#end-station-docks').attr('station',infoWindow.stationId)
       })
+    })
+
+    Object.keys(currentData).forEach(function(key){
+      if (Object.keys(bikeData).indexOf(key)>=0){
+        keys.push(key)
+      }
     })
 
     keys.forEach(function(key){
@@ -79,10 +94,13 @@ function initMap() {
 $(document).ready(function(){
   var $timeDropdown = $('#time-dropdown')
   
+  var $startStationBikes = $('#start-station-bikes')
+  var $endStationDocks = $('#end-station-docks')
+
   var setMarkerOpacity = function(time){
-    var changeBaseData = (time==="current") ? currentData : bikeData;
+    var baseData = determineBaseData(time);
     markers.forEach(function(marker){
-      var station = changeBaseData[marker.stationId]
+      var station = baseData[marker.stationId]
       if (station){
         var bikes = (time==="current") ? station.bikes : station.averageBikes[time]
         marker.setOpacity(calculateOpacity(bikes,station.capacity))     
@@ -90,12 +108,27 @@ $(document).ready(function(){
     })  
   }
 
-  var loadNewOpacity = function(){
-    var time = $(this).val()
-    setMarkerOpacity(time);     
+  var changeBikesAndDocks = function(time){
+    var startStationId = $startStationBikes.attr('station')
+    var endStationId = $endStationDocks.attr('station')
+    var baseData = determineBaseData(time)
+    if (startStationId){
+      var bikes = determineStationBikes(baseData,time,startStationId)
+      $startStationBikes.text('Bikes Available: '+bikes)
+    }
+    if (endStationId){
+      var docks = bikeData[endStationId].capacity - determineStationBikes(baseData,time,endStationId)
+      $endStationDocks.text('Docks Available: '+docks)
+    }
   }
 
-  $timeDropdown.on('change', loadNewOpacity)
+  var timeChange = function(){
+    var time = $(this).val()
+    setMarkerOpacity(time);
+    changeBikesAndDocks(time);
+  }
+
+  $timeDropdown.on('change', timeChange)
 
   var $playButton = $('#play-button');
   var $pauseButton = $('#pause-button');
@@ -117,7 +150,9 @@ $(document).ready(function(){
       currentIndex++;
       $timeDropdown.selected = false;
       $options[currentIndex].selected = true;
-      setMarkerOpacity($timeDropdown.val())
+      var time = $timeDropdown.val()
+      setMarkerOpacity(time)
+      changeBikesAndDocks(time)
     },1000)
 
     $playButton.addClass('disabled')
