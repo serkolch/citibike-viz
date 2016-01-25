@@ -83,7 +83,7 @@ var addMarkers = function(){
 
       // Create an info window that loads on each marker with two buttons
       var infoWindow = new google.maps.InfoWindow({
-        content: '<p id="station-name"></p>'+'<br>'+'<button class="start-station ui inverted blue button small">Start Dock</button>'+'<br>'+
+        content: '<h4 id="station-name" class="blue-text"></h4>'+'<button class="start-station ui inverted blue button small">Start Dock</button>'+
           '<button class="end-station ui inverted blue button small">Destination</button>'
       })
 
@@ -96,6 +96,7 @@ var addMarkers = function(){
         time = $('#time-dropdown').val()
         var stationName = bikeData[infoWindow.stationId].stationName
         var stationBikes = determineStationBikes(determineBaseData(time),time,infoWindow.stationId)
+        $('#station-name').text(stationName+'- '+stationBikes+' bikes')
         var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
 
         // Populate tables with information about stations, add station attribute to reference later

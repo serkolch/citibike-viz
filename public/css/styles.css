@@ -1,5 +1,10 @@
 .page-length {
-  height: 90vh;
+  height: 89vh;
+}
+
+.scroll {
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .description {
@@ -11,11 +16,11 @@
 }
 
 #time-dropdown {
-  margin: 0 12px 12px 12px;
+  margin: 0 9px 5px 9px;
 }
 
 #play-button, #pause-button, #right-now , .menu-center{
-  margin: 12px;
+  margin: 5px 9px;
 }
 
 .ui.secondary.vertical.menu {
@@ -29,4 +34,8 @@
 
 .start-station, .end-station {
   background: none;
+}
+
+.blue-text {
+  color: #3B83C0;
 }
