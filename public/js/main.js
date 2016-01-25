@@ -73,83 +73,81 @@ var addMarkers = function(){
     dataType: 'json'
   }).then(function(response){
     bikeData = response[0]
-// Load current data from Citibike API (routed through server for security reasons)
-  $.ajax({
-    url: '/current-data',
-    type: 'get',
-    dataType: 'json'
-  }).then(function(response){
-    currentData = response
+    // Load current data from Citibike API (routed through server for security reasons)
+    $.ajax({
+      url: '/current-data',
+      type: 'get',
+      dataType: 'json'
+    }).then(function(response){
+      currentData = response
 
-    // Create an info window that loads on each marker with two buttons
-    var infoWindow = new google.maps.InfoWindow({
-      content: '<p id="station-name"></p>'+'<br>'+'<button class="start-station ui inverted blue button small">Start Dock</button>'+'<br>'+
-        '<button class="end-station ui inverted blue button small">Destination</button>'
-    })
+      // Create an info window that loads on each marker with two buttons
+      var infoWindow = new google.maps.InfoWindow({
+        content: '<p id="station-name"></p>'+'<br>'+'<button class="start-station ui inverted blue button small">Start Dock</button>'+'<br>'+
+          '<button class="end-station ui inverted blue button small">Destination</button>'
+      })
 
-    // Add an event listener on the infoWindow when the DOM is loaded
-    google.maps.event.addListener(infoWindow,'domready',function(){
-      // Remove existing listeners (prevent duplicate functionality)
-      $('.start-station').off();
-      $('.end-station').off();
+      // Add an event listener on the infoWindow when the DOM is loaded
+      google.maps.event.addListener(infoWindow,'domready',function(){
+        // Remove existing listeners (prevent duplicate functionality)
+        $('.start-station').off();
+        $('.end-station').off();
 
-      time = $('#time-dropdown').val()
-      var stationName = bikeData[infoWindow.stationId].stationName
-      var stationBikes = determineStationBikes(determineBaseData(time),time,infoWindow.stationId)
-      var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
+        time = $('#time-dropdown').val()
+        var stationName = bikeData[infoWindow.stationId].stationName
+        var stationBikes = determineStationBikes(determineBaseData(time),time,infoWindow.stationId)
+        var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
 
-      // Populate tables with information about stations, add station attribute to reference later
-      $('.start-station').on('click',function(){
-        $('#start-station-name').text(stationName)
-        $('#start-station-bikes').text('Bikes Available: '+stationBikes)
-        $('#start-station-bikes').attr('station',infoWindow.stationId)
-        if ($('#end-station-docks').attr('station')){
-          calculateTripData();
-          calculateRecommendation(originStationId,destinationStationId)
+        // Populate tables with information about stations, add station attribute to reference later
+        $('.start-station').on('click',function(){
+          $('#start-station-name').text(stationName)
+          $('#start-station-bikes').text('Bikes Available: '+stationBikes)
+          $('#start-station-bikes').attr('station',infoWindow.stationId)
+          if ($('#end-station-docks').attr('station')){
+            calculateTripData();
+            calculateRecommendation(originStationId,destinationStationId)
+          }
+        })
+        $('.end-station').on('click',function(){
+          $('#end-station-name').text(stationName)
+          $('#end-station-docks').text('Docks Available: '+stationDocks)
+          $('#end-station-docks').attr('station',infoWindow.stationId)
+          if ($('#start-station-bikes').attr('station')){
+            calculateTripData();
+            calculateRecommendation(originStationId,destinationStationId)
+          }        
+        })
+      })
+
+      //Create an array of keys for stations in both current data and bike data
+      Object.keys(currentData).forEach(function(key){
+        if (Object.keys(bikeData).indexOf(key)>=0){
+          keys.push(key)
         }
       })
-      $('.end-station').on('click',function(){
-        $('#end-station-name').text(stationName)
-        $('#end-station-docks').text('Docks Available: '+stationDocks)
-        $('#end-station-docks').attr('station',infoWindow.stationId)
-        if ($('#start-station-bikes').attr('station')){
-          calculateTripData();
-          calculateRecommendation(originStationId,destinationStationId)
-        }        
+
+      keys.forEach(function(key){
+        var station = currentData[key]
+        var stationBikes = station.bikes
+        var stationTotal = station.capacity
+
+        // Create a new marker at the correct position and a calculated opacity for each station
+        var marker = new google.maps.Marker({
+          position: {lat: station.lat, lng: station.lng},
+          map: map,
+          stationId: key,
+          icon: bike,
+          opacity: calculateOpacity(stationBikes,stationTotal)
+        });
+
+        // Pop open the infoWindow on click, and re-assign the infoWindow stationId
+        marker.addListener('click',function(){
+          infoWindow.open(map,marker)
+          infoWindow.stationId = marker.stationId
+        })
+        markers.push(marker)
       })
-    })
-
-    //Create an array of keys for stations in both current data and bike data
-    console.log(1,currentData)
-    console.log(2, bikeData)
-    Object.keys(currentData).forEach(function(key){
-      if (Object.keys(bikeData).indexOf(key)>=0){
-        keys.push(key)
-      }
-    })
-
-    keys.forEach(function(key){
-      var station = currentData[key]
-      var stationBikes = station.bikes
-      var stationTotal = station.capacity
-
-      // Create a new marker at the correct position and a calculated opacity for each station
-      var marker = new google.maps.Marker({
-        position: {lat: station.lat, lng: station.lng},
-        map: map,
-        stationId: key,
-        icon: bike,
-        opacity: calculateOpacity(stationBikes,stationTotal)
-      });
-
-      // Pop open the infoWindow on click, and re-assign the infoWindow stationId
-      marker.addListener('click',function(){
-        infoWindow.open(map,marker)
-        infoWindow.stationId = marker.stationId
-      })
-      markers.push(marker)
-    })
-  })  
+    })  
   })
 };
 
