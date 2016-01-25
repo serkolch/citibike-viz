@@ -122,6 +122,8 @@ var addMarkers = function(){
     })
 
     //Create an array of keys for stations in both current data and bike data
+    console.log(1,currentData)
+    console.log(2, bikeData)
     Object.keys(currentData).forEach(function(key){
       if (Object.keys(bikeData).indexOf(key)>=0){
         keys.push(key)
