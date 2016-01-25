@@ -1,1 +1,1 @@
-web: node app.js
+web: node data_scraping/seed.js

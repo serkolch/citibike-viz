@@ -2,6 +2,7 @@ var glob = require('glob')
 
 glob("data/*.json", function(er,files){
   var dataFiles = files
+  console.log(dataFiles)
 
   var requiredData = dataFiles.map(function(file){
     return require('./'+file)
