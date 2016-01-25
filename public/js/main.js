@@ -229,7 +229,7 @@ $(document).ready(function(){
       if (originStationId && destinationStationId) {
         calculateRecommendation(originStationId,destinationStationId)
       }
-    },250)
+    },100)
 
     $playButton.addClass('disabled')
     $pauseButton.removeClass('disabled');
