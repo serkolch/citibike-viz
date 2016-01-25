@@ -64,18 +64,16 @@ var determineStationBikes = function(data,time,id){
   return (time==='current') ? data[id].bikes : data[id].averageBikes[time]
 }
 
-// Load historical data
-$.ajax({
-  url: '/data-averages',
-  type: 'get',
-  dataType: 'json'
-}).then(function(response){
-  bikeData = response[0]
-})
-
 // All encompassing markers function
 var addMarkers = function(){
-  // Load current data from Citibike API (routed through server for security reasons)
+  // Load historical data
+  $.ajax({
+    url: '/data-averages',
+    type: 'get',
+    dataType: 'json'
+  }).then(function(response){
+    bikeData = response[0]
+// Load current data from Citibike API (routed through server for security reasons)
   $.ajax({
     url: '/current-data',
     type: 'get',
@@ -151,6 +149,7 @@ var addMarkers = function(){
       })
       markers.push(marker)
     })
+  })  
   })
 };
 
