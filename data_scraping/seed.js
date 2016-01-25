@@ -1,15 +1,15 @@
 var glob = require('glob')
+var fs = require('fs')
 
 glob("data/*.json", function(er,files){
   var dataFiles = files
-  console.log(dataFiles)
 
   var requiredData = dataFiles.map(function(file){
     return require('./'+file)
   })
 
   var MongoClient = require('mongodb').MongoClient;
-  var mongoUrl = process.env.MONGOLAB_URI;
+  var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/sandbox';
 
   var db;
 
@@ -42,6 +42,8 @@ glob("data/*.json", function(er,files){
     requiredData.forEach(repeat)
 
     db.collection('bikes').insert(structure)
+
+    fs.writeFile('seed.json',JSON.stringify(structure))
 
     process.on('exit', db.close);
   });
