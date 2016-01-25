@@ -8,7 +8,7 @@ glob("data/*.json", function(er,files){
   })
 
   var MongoClient = require('mongodb').MongoClient;
-  var mongoUrl = 'mongodb://localhost:27017/sandbox';
+  var mongoUrl = process.env.MONGOLAB_URI;
 
   var db;
 
