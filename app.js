@@ -1,7 +1,10 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var request = require('request')
+var request = require('request');
+var glob = require('glob');
+
+var times = []
 
 // Configuration
 app.use(bodyParser.json());
@@ -23,9 +26,44 @@ MongoClient.connect(mongoUrl, function(err, database) {
 });
 
 // Routes
-app.get('/', function(req, res){
-  res.render('index',{key: process.env.GOOGLE_KEY});
+
+glob("data_scraping/data/*.json", function(er,files){
+  files.forEach(function(file){
+    times.push(file.split(/[\/.]+/)[2])
+  })
+
+  var timesSorted = []
+  times.forEach(function(time){
+    if (time[0]==='1' && time[1]==='2' && time[5] === 'A'){
+      timesSorted.push(time)
+    }
+  })
+  times.forEach(function(time){
+    if ((time[0]==='0' || time[1] !== '2') && time[5] === 'A'){
+      timesSorted.push(time)
+    }
+  })
+  times.forEach(function(time){
+    if (time[0]==='1' && time[1]==='2' && time[5] === 'P'){
+      timesSorted.push(time)
+    }
+  })
+  times.forEach(function(time){
+    if ((time[0]==='0' || time[1] !== '2') && time[5] === 'P'){
+      timesSorted.push(time)
+    }
+  })
+  var values = [];
+  timesSorted.forEach(function(time){
+    values.push(time.replace(":","-"))
+  })
+
+  app.get('/', function(req, res){
+    res.render('index',{key: process.env.GOOGLE_KEY,values: values,times:timesSorted});
+  })
+
 })
+
 
 app.get('/current-data', function(req,res){
   request('http://www.citibikenyc.com/stations/json',function(error,response,body){

@@ -4,17 +4,40 @@ var bikeData
 var currentData
 var bike = 'images/bike.png';
 var keys = []
+var time = 'current'
+var originStationId
+var destinationStationId
 
 // Calculate marker opacity based on number of bikes in station
 var calculateOpacity = function(num1,num2){
   return 0.08+0.92*(num1/num2)
 }
 
-var calculateDistanceAndDuration = function(){
-  var originStationId = $('#start-station-bikes').attr('station')
+// Calculate and append recommendation
+var calculateRecommendation = function(id1,id2){
+  var baseData = determineBaseData(time)
+  var bikes = determineStationBikes(baseData,time,id1)
+  var docks = bikeData[id2].capacity - determineStationBikes(baseData,time,id2)
+  if (bikes>15 && docks>15){
+    var message = 'Recommended'
+    var style = {'background-color':'green','color':'white'}
+  } else if (bikes<15 && docks<15){
+    var message = 'Not Recommended'
+    var style = {'background-color':'red','color':'white'}
+  } else {
+    var message = 'Consider New Route'
+    var style = {'background-color':'yellow','color':'gray'}
+  }
+  $('#recommendation').text(message)
+  $('#recommendation').css(style)
+}
+
+// Calculate and append distance/duration
+var calculateTripData = function(){
+  originStationId = $('#start-station-bikes').attr('station')
   var originStation = bikeData[originStationId]
   var origin = new google.maps.LatLng(originStation.latitude,originStation.longitude);
-  var destinationStationId = $('#end-station-docks').attr('station')
+  destinationStationId = $('#end-station-docks').attr('station')
   var destinationStation = bikeData[destinationStationId]
   var destination = new google.maps.LatLng(destinationStation.latitude,destinationStation.longitude)
 
@@ -62,7 +85,7 @@ var addMarkers = function(){
 
     // Create an info window that loads on each marker with two buttons
     var infoWindow = new google.maps.InfoWindow({
-      content: '<button class="start-station ui inverted blue button small">Start Dock</button>'+
+      content: '<p id="station-name"></p>'+'<br>'+'<button class="start-station ui inverted blue button small">Start Dock</button>'+'<br>'+
         '<button class="end-station ui inverted blue button small">Destination</button>'
     })
 
@@ -72,7 +95,7 @@ var addMarkers = function(){
       $('.start-station').off();
       $('.end-station').off();
 
-      var time = $('#time-dropdown').val()
+      time = $('#time-dropdown').val()
       var stationName = bikeData[infoWindow.stationId].stationName
       var stationBikes = determineStationBikes(determineBaseData(time),time,infoWindow.stationId)
       var stationDocks = bikeData[infoWindow.stationId].capacity - stationBikes
@@ -83,7 +106,8 @@ var addMarkers = function(){
         $('#start-station-bikes').text('Bikes Available: '+stationBikes)
         $('#start-station-bikes').attr('station',infoWindow.stationId)
         if ($('#end-station-docks').attr('station')){
-          calculateDistanceAndDuration();
+          calculateTripData();
+          calculateRecommendation(originStationId,destinationStationId)
         }
       })
       $('.end-station').on('click',function(){
@@ -91,7 +115,8 @@ var addMarkers = function(){
         $('#end-station-docks').text('Docks Available: '+stationDocks)
         $('#end-station-docks').attr('station',infoWindow.stationId)
         if ($('#start-station-bikes').attr('station')){
-          calculateDistanceAndDuration();
+          calculateTripData();
+          calculateRecommendation(originStationId,destinationStationId)
         }        
       })
     })
@@ -171,7 +196,7 @@ $(document).ready(function(){
   }
 
   var timeChange = function(){
-    var time = $(this).val()
+    time = $(this).val()
     setMarkerOpacity(time);
     changeBikesAndDocks(time);
   }
@@ -198,10 +223,13 @@ $(document).ready(function(){
       currentIndex++;
       $timeDropdown.selected = false;
       $options[currentIndex].selected = true;
-      var time = $timeDropdown.val()
+      time = $timeDropdown.val()
       setMarkerOpacity(time)
       changeBikesAndDocks(time)
-    },1000)
+      if (originStationId && destinationStationId) {
+        calculateRecommendation(originStationId,destinationStationId)
+      }
+    },250)
 
     $playButton.addClass('disabled')
     $pauseButton.removeClass('disabled');

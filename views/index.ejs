@@ -31,21 +31,9 @@
     <div class="two wide column ui secondary vertical menu">
       <select id="time-dropdown" class="fluid ui dropdown">
         <option value="current">Current</option>
-        <option value="04-00PM">4:00AM</option>
-        <option value="08-00AM">8:00AM</option>
-        <option value="09-00AM">9:00AM</option>
-        <option value="10-00AM">10:00AM</option>
-        <option value="11-00AM">11:00AM</option>
-        <option value="12-00PM">12:00PM</option>
-        <option value="01-00PM">1:00PM</option>
-        <option value="02-15PM">2:15PM</option>
-        <option value="03-15PM">3:15PM</option>
-        <option value="04-30PM">4:30PM</option>
-        <option value="07-45PM">7:45PM</option>
-        <option value="09-00PM">9:00PM</option>
-        <option value="10-00PM">10:00PM</option>
-        <option value="11-00PM">11:00PM</option>
-        <option value="12-00AM">12:00AM</option>
+        <% times.forEach(function(time,index){ %>
+          <option value="<%=values[index]%>"><%= time %></option>
+        <% }) %>
       </select>
       <button id="right-now" class="fluid ui labeled icon button blue">
         <i class="pointing down icon"></i>
@@ -103,7 +91,7 @@
             <td id="trip-duration">Duration: </td>
           </tr>
           <tr>
-            <td id="recommendation">Recommendation </td>
+            <td id="recommendation">No Recommendation Yet</td>
           </tr>          
         </tbody>
       </table>      
