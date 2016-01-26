@@ -4,7 +4,7 @@
 A user can click on a station on the map to bring up the station's status - number of bikes available, number of docks available. They can set it to the beginning dock and choose another dock as the end dock. The system will predict how feasible it will be to both get a bike and dock that bike within the next hour at the selected stations.
 
 ####Time-Map
-A user can view the saturation of bikes at stations every half-hour and make future plans based on the bikes.
+A user can view the saturation of bikes at stations every quarter-hour and make future plans based on the bikes.
 
 ####Technologies
 MongoDB Database  
