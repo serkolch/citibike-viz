@@ -26,7 +26,7 @@
     </div>
   </div>
 
-  <div class="ui grid page-length">
+  <div class="ui grid stackable page-length">
     <!-- Side Bar -->
     <div class="three wide column ui secondary vertical menu scroll">
       <select id="time-dropdown" class="fluid ui scrolling dropdown tiny">
@@ -93,7 +93,7 @@
       </table>      
     </div>
     <!-- Map -->
-    <div class="thirteen wide stretched column">
+    <div class="thirteen wide stretched column mobile">
       <div id="map"></div>
       <script src="https://maps.googleapis.com/maps/api/js?key=<%=key%>&callback=initMap"
         async defer></script>

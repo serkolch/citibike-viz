@@ -39,3 +39,22 @@
 .blue-text {
   color: #3B83C0;
 }
+
+@media (max-width:768px) {
+  .mobile {
+    height: 620px;
+  }
+
+  .scroll {
+    overflow: none;
+    overflow-y: none;
+  }
+
+  #time-dropdown {
+    margin: 0 9px 5px 0px;
+  }
+
+  #play-button, #pause-button, #right-now , .menu-center{
+    margin: 5px 0px;
+  }
+}
