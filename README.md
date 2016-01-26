@@ -7,13 +7,13 @@ A user can click on a station on the map to bring up the station's status - numb
 A user can view the saturation of bikes at stations every half-hour and make future plans based on the bikes.
 
 ####Technologies
-MongoDB Database
-Node.js Server-Side Environment
-Express.js Server
-CitiBike API - https://www.citibikenyc.com/stations/json
-Google Maps API
-Google Maps API Services
-Front-End HTML, CSS, JS, JQuery
+MongoDB Database  
+Node.js Server-Side Environment  
+Express.js Server  
+CitiBike API - https://www.citibikenyc.com/stations/json  
+Google Maps API  
+Google Maps API Services  
+Front-End HTML, CSS, JS, JQuery  
 SemanticUI Library
 
 ####Wireframe
