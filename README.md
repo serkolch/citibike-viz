@@ -7,12 +7,17 @@ A user can click on a station on the map to bring up the station's status - numb
 A user can view the saturation of bikes at stations every half-hour and make future plans based on the bikes.
 
 ####Technologies
-MEAN Stack - MongoDB, Express.js, Angular.js, Node.js
-Citibike Data - https://www.citibikenyc.com/stations/json, a second app I will write to make API calls every 30 minutes and save the data
-Google APIs Javascript Map
+MongoDB Database
+Node.js Server-Side Environment
+Express.js Server
+CitiBike API - https://www.citibikenyc.com/stations/json
+Google Maps API
+Google Maps API Services
+Front-End HTML, CSS, JS, JQuery
+SemanticUI Library
 
 ####Wireframe
-![Wireframe](http://i.imgur.com/spUhNY4.jpg "Single Page Citibike App")
+![Wireframe](http://i.imgur.com/66aWMW2.png "Single Page Citibike App")
 
 ####ERD
-![ERD](http://i.imgur.com/TUqwFJy.jpg "ERD")
+![ERD](http://i.imgur.com/k6cyCIy.png "ERD")
