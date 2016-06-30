@@ -19,6 +19,7 @@
   "homepage": "https://github.com/serkolch/citibike-viz-data#readme",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "cors": "^2.7.1",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "fs": "0.0.2",
