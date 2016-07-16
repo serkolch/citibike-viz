@@ -25,4 +25,7 @@ app.get('/', function(req, res){
   res.render('index',{key: process.env.GOOGLE_KEY,values: timesDash,times:times});
 })
 
+app.get('*', function(req,res){
+  res.redirect('/');
+})
 app.listen(process.env.PORT || 3000);
