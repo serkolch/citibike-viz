@@ -27,6 +27,7 @@
     "mongodb": "^2.1.4",
     "nodemon": "^1.8.1",
     "request": "^2.67.0",
+    "router": "^1.1.4",
     "semantic-ui": "^2.1.8"
   }
 }

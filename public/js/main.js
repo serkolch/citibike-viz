@@ -68,14 +68,14 @@ var determineStationBikes = function(data,time,id){
 var addMarkers = function(){
   // Load historical data
   $.ajax({
-    url: '/data-averages',
+    url: '/api/db',
     type: 'get',
     dataType: 'json'
   }).then(function(response){
     bikeData = response[0]
     // Load current data from Citibike API (routed through server for security reasons)
     $.ajax({
-      url: '/current-data',
+      url: '/api/citibike',
       type: 'get',
       dataType: 'json'
     }).then(function(response){
