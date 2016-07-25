@@ -16,7 +16,6 @@ app.set('view engine', 'ejs')
 var timesDash = times.map(function(time){
   time = time.replace(":","-");
   time = (time.length===6) ? '0'+time : time;
-  console.log(time);
   return time
 })
 
