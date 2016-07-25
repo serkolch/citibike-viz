@@ -15,9 +15,11 @@ var calculateOpacity = function(num1,num2){
 
 // Calculate and append recommendation
 var calculateRecommendation = function(id1,id2){
+  
   var baseData = determineBaseData(time)
   var bikes = determineStationBikes(baseData,time,id1)
   var docks = bikeData[id2].capacity - determineStationBikes(baseData,time,id2)
+
   if (bikes>15 && docks>15){
     var message = 'Recommended'
     var style = {'background-color':'green','color':'white'}
@@ -28,6 +30,7 @@ var calculateRecommendation = function(id1,id2){
     var message = 'Consider New Route'
     var style = {'background-color':'yellow','color':'gray'}
   }
+
   $('#recommendation').text(message)
   $('#recommendation').css(style)
 }

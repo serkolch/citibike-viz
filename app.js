@@ -14,7 +14,10 @@ app.use(express.static(__dirname + '/semantic'));
 app.set('view engine', 'ejs')
 
 var timesDash = times.map(function(time){
-  return time.replace(":","-")
+  time = time.replace(":","-");
+  time = (time.length===6) ? '0'+time : time;
+  console.log(time);
+  return time
 })
 
 // Routes
